@@ -24,7 +24,7 @@ functions:
       image:
         repository: iguaziodocker/tsdb-query
         tag: 0.0.7
-    kv:
+    queryKV:
       readinessTimeoutSeconds: 180
       replicas: 1
       port: 32032
