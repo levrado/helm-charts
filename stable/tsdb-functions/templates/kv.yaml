@@ -1,0 +1,33 @@
+apiVersion: nuclio.io/v1beta1
+kind: Function
+metadata:
+  name: {{ template "tsdb-functions.queryKVName" . }}
+  labels:
+    nuclio.io/project-name: {{ template "tsdb-functions.projectName" . }}
+    app: {{ template "tsdb-functions.name" . }}
+    chart: {{ template "tsdb-functions.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  build:
+    codeEntryType: image
+  handler: main:QueryKV
+  image: {{ .Values.functions.queryKV.image.repository }}:{{ .Values.functions.queryKV.image.tag }}
+  replicas: {{ .Values.functions.queryKV.replicas }}
+  runtime: golang
+  readinessTimeoutSeconds: {{ .Values.functions.queryKV.readinessTimeoutSeconds }}
+  triggers:
+    grafana:
+      kind: http
+      maxWorkers: {{ .Values.functions.queryKV.maxWorkers }}
+      attributes:
+        port: {{ .Values.functions.queryKV.port }}
+        {{- if .Values.functions.queryKV.ingress }}
+        ingresses:
+          http:
+            host: {{ .Values.functions.queryKV.ingress.host }}
+            paths:
+            - {{ default "/" .Values.functions.queryKV.ingress.path }}
+        {{- end }}
+status:
+  state: waitingForResourceConfiguration

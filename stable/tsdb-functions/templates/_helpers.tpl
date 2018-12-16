@@ -24,3 +24,7 @@ Create chart name and version as used by the chart label.
 {{- define "tsdb-functions.projectName" -}}
 {{- printf "%s-%s" .Release.Name "project" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+{{- define "tsdb-functions.queryKVName" -}}
+{{- printf "%s-%s" .Release.Name "query-kv" | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
